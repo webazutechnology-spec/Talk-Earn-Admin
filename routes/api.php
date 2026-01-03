@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Usercontroller;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -17,21 +19,24 @@ Route::prefix('v1')->namespace('api')->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verify_otp']);
     Route::post('login-resend-otp', [AuthController::class, 'login_resend_otp']);
 
-    Route::middleware('apiAuth:required')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
 
         Route::prefix('user')->group(function () {
 
-            Route::get('profile', [ApiController::class, 'profile']);
-            Route::post('update-profile', [ApiController::class, 'update_profile']);
-
+            Route::get('profile', [Usercontroller::class, 'profile']);
+            Route::post('update-profile', [Usercontroller::class, 'update_profile']);
+            Route::post('dashboard', [Usercontroller::class, 'dashboard']);
+            Route::post('/updateprofessional', [Usercontroller::class, 'update_professional_profile']);
+            Route::post('sendAadhaarOtp', [Usercontroller::class, 'sendAadhaarOtp']);
+            Route::post('verifyAadhaarOtp', [Usercontroller::class, 'verifyAadhaarOtp']);
+            Route::post('sendPanOtp', [Usercontroller::class, 'sendPanOtp']);
             Route::prefix('address')->group(function () {
                 Route::post('/create', [ApiController::class, 'create']);
                 Route::post('/update/{id}', [ApiController::class, 'update']);
-                Route::get('/list', [ApiController::class, 'listByUser']); 
-                Route::get('info/{id}', [ApiController::class, 'getById']);   
-                Route::delete('delete/{id}', [ApiController::class, 'destroy']);      
+                Route::get('/list', [ApiController::class, 'listByUser']);
+                Route::get('info/{id}', [ApiController::class, 'getById']);
+                Route::delete('delete/{id}', [ApiController::class, 'destroy']);
             });
-
         });
 
         Route::prefix('cart')->group(function () {
@@ -72,10 +77,8 @@ Route::prefix('v1')->namespace('api')->group(function () {
         Route::get('products', [ApiController::class, 'products']);
         Route::get('product/{id}', [ApiController::class, 'productDetail']);
         Route::get('search', [ApiController::class, 'search']);
-        
     });
 
     Route::get('static-content/{type}', [ApiController::class, 'appWebsiteInfo']);
     Route::get('app-config', [ApiController::class, 'websiteSettings']);
-
 });

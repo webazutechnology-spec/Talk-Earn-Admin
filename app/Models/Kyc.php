@@ -25,7 +25,9 @@ class Kyc extends Model
         'gst_certificate',
         'license_number',
         'remarks',
-        'status'
+        'status',
+        'otp',
+        'otp_expires_at',
     ];
 
     protected $casts = [
@@ -33,7 +35,8 @@ class Kyc extends Model
         'created_at' => 'datetime',
     ];
 
-    public function user(){
+    public function user()
+    {
         return  $this->belongsTo(User::class);
     }
 
@@ -46,5 +49,4 @@ class Kyc extends Model
     {
         return \Carbon\Carbon::parse($value)->format('d-m-Y H:i A');
     }
-
 }

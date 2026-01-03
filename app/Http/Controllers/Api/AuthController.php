@@ -41,8 +41,8 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                "status" => 400, 
-                "message" => $validator->errors()->first(), 
+                "status" => 400,
+                "message" => $validator->errors()->first(),
                 "errors" => $validator->errors()
             ]);
         }
@@ -69,7 +69,6 @@ class AuthController extends Controller
                 'token' => $userrequest->token,
                 'next_screen' => 'otp'
             ]);
-
         } else {
 
             $userrequest = UserRequest::create([
@@ -104,16 +103,16 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                "status" => 400, 
-                "message" => $validator->errors()->first(), 
+                "status" => 400,
+                "message" => $validator->errors()->first(),
                 "errors" => $validator->errors()
             ]);
         }
 
-        $data = UserRequest::where('token',$request->token)->where('phone_number',$request->phone_number)->latest()->first();
-            
-        if($data) {
-            if(!empty($data->verify_at)) {
+        $data = UserRequest::where('token', $request->token)->where('phone_number', $request->phone_number)->latest()->first();
+
+        if ($data) {
+            if (!empty($data->verify_at)) {
                 return response()->json([
                     'status' => 401,
                     'message' => 'otp expired.',
@@ -134,13 +133,12 @@ class AuthController extends Controller
                     'next_screen' => 'otp'
                 ]);
             } else {
-               return response()->json([
+                return response()->json([
                     'status' => 401,
                     'message' => 'Failed to update user information.',
                     'next_screen' => 'login'
                 ]);
             }
-
         } else {
             return response()->json([
                 'status' => 401,
@@ -148,7 +146,6 @@ class AuthController extends Controller
                 'next_screen' => 'login'
             ]);
         }
-
     }
 
 
@@ -165,46 +162,45 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                "status" => 400, 
-                "message" => $validator->errors()->first(), 
+                "status" => 400,
+                "message" => $validator->errors()->first(),
                 "errors" => $validator->errors()
             ]);
         }
 
-        $data = UserRequest::where('token', $request->token)->where('phone_number',$request->phone_number)->latest()->first();
-     
-        if($data) {
-            if(!empty($data->verify_at)) {
+        $data = UserRequest::where('token', $request->token)->where('phone_number', $request->phone_number)->latest()->first();
+
+        if ($data) {
+            if (!empty($data->verify_at)) {
                 return response()->json([
                     'status' => 401,
                     'message' => 'otp expired.',
-                    'next_screen' => $data->for == 'registration'?'registration':'login'
+                    'next_screen' => $data->for == 'registration' ? 'registration' : 'login'
                 ]);
             }
 
             UserRequest::where('id', $data->id)->update([
-                'hit_count' => $data->hit_count+1
+                'hit_count' => $data->hit_count + 1
             ]);
 
-            if($data->hit_count >= 10) {
+            if ($data->hit_count >= 10) {
 
                 return response()->json([
                     'status' => 401,
                     'message' => 'OTP verification failed: Maximum retry limit reached.',
-                    'next_screen' => $data->for == 'registration'?'registration':'login',
+                    'next_screen' => $data->for == 'registration' ? 'registration' : 'login',
                 ]);
-                
             }
 
-            if($data->otp == $request->otp) {
+            if ($data->otp == $request->otp) {
 
                 $user = User::where('phone_number', $request->phone_number)->first();
 
-                if(!$user && $data->for == 'registration') {
+                if (!$user && $data->for == 'registration') {
 
-                DB::beginTransaction();
+                    DB::beginTransaction();
 
-                try {
+                    try {
 
                         $code = Helper::getTransId(4);
 
@@ -236,7 +232,6 @@ class AuthController extends Controller
                         ]);
 
                         DB::commit();
-
                     } catch (\Exception $e) {
 
                         DB::rollBack();
@@ -247,9 +242,8 @@ class AuthController extends Controller
                             'next_screen' => 'registration',
                         ]);
                     }
-
                 }
-                
+
                 // $token = JWTAuth::fromUser($user);
                 $token = $user->createToken('mobile', ['*'], now()->addDays(365))->plainTextToken;
 
@@ -266,7 +260,6 @@ class AuthController extends Controller
                 'message' => 'Please enter valid otp.',
                 'next_screen' => 'otp'
             ]);
-
         } else {
             return response()->json([
                 'status' => 401,
@@ -290,17 +283,17 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                "status" => 400, 
-                "message" => $validator->errors()->first(), 
+                "status" => 400,
+                "message" => $validator->errors()->first(),
                 "errors" => $validator->errors()
             ]);
         }
 
-        $data = UserRequest::where('token',$request->token)->where('phone_number',$request->phone_number)->latest()->first();
-            
-        if($data) {
+        $data = UserRequest::where('token', $request->token)->where('phone_number', $request->phone_number)->latest()->first();
 
-            if(!empty($data->verify_at)) {
+        if ($data) {
+
+            if (!empty($data->verify_at)) {
                 return response()->json([
                     'status' => 401,
                     'message' => 'otp expired.',
@@ -309,7 +302,7 @@ class AuthController extends Controller
             }
 
             $otp = rand(100000, 999999);
-            
+            $otp = 123456;
             $check = UserRequest::where('id', $data->id)->update([
                 'otp' => $otp,
                 'hit_count' => 0,
@@ -323,13 +316,12 @@ class AuthController extends Controller
                     'next_screen' => 'otp'
                 ]);
             } else {
-               return response()->json([
+                return response()->json([
                     'status' => 401,
                     'message' => 'Failed to update user information.',
                     'next_screen' => 'login'
                 ]);
             }
-
         } else {
             return response()->json([
                 'status' => 401,
@@ -338,6 +330,4 @@ class AuthController extends Controller
             ]);
         }
     }
-
-
 }

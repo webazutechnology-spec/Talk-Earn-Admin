@@ -24,10 +24,11 @@ class User extends Authenticatable
      */
 
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
         'code',
         'name',
+        'username',
         'father_name',
         'company_name',
         'mother_name',
@@ -42,8 +43,13 @@ class User extends Authenticatable
         'parent_id',
         'referral_id',
         'phone_number',
+        'about',
+        'hobbies',
+        'Type',
     ];
-
+    protected  $casts = [
+        'hobbies' => 'array',
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -53,6 +59,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
 
     /**
      * Get the attributes that should be cast.
@@ -66,7 +73,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
- 
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -87,7 +94,18 @@ class User extends Authenticatable
     {
         return $this->hasOne(Address::class);
     }
-
+    public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
+    public function professionalProfile()
+    {
+        return $this->hasOne(Professionalusers::class);
+    }
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
     public function user_steps()
     {
         return $this->hasMany(UserSteps::class);
