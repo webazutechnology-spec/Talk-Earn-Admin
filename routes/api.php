@@ -30,6 +30,7 @@ Route::prefix('v1')->namespace('api')->group(function () {
             Route::post('sendAadhaarOtp', [Usercontroller::class, 'sendAadhaarOtp']);
             Route::post('verifyAadhaarOtp', [Usercontroller::class, 'verifyAadhaarOtp']);
             Route::post('sendPanOtp', [Usercontroller::class, 'sendPanOtp']);
+            Route::post('verifyPanOtp', [Usercontroller::class, 'verifyPanOtp']);
             Route::prefix('address')->group(function () {
                 Route::post('/create', [ApiController::class, 'create']);
                 Route::post('/update/{id}', [ApiController::class, 'update']);

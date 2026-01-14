@@ -16,6 +16,13 @@ class Usercontroller extends Controller
 {
     public function profile(Request $request)
     {
+        $user = Auth::user();
+        if (!Auth::check() || !$user) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Unauthorized',
+            ]);
+        }
         $data = User::find($request->user()->id);
         return response()->json([
             "status" => 200,
@@ -27,7 +34,7 @@ class Usercontroller extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'image'     => 'nullable|image|max:2048',
-            'username' => 'required|string|max:50|unique:users,username,' . Auth::id(),
+            'username' =>  'required|string|max:50|unique:users,username,' . Auth::id(),
             'about'     => 'required|string|max:1000',
             'location'  => 'nullable|string|max:255',
             'hobbies' => 'nullable',
@@ -210,6 +217,12 @@ class Usercontroller extends Controller
                 'message' => 'Unauthorized'
             ], 401);
         }
+        if (Kyc::where('aadhar_number', $request->aadhar_number)->where('status', 'Verified')->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Aadhaar number already verified'
+            ], 422);
+        }
         $otp = 123456;
 
         Kyc::updateOrCreate(
@@ -298,6 +311,12 @@ class Usercontroller extends Controller
                 'message' => 'Unauthorized'
             ], 401);
         }
+        if (Kyc::where('pan_number', strtoupper($request->pan_number))->where('pan_status', 'Verified')->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'PAN number already verified'
+            ], 422);
+        }
         $otp = rand(100000, 999999);
         $otp = 123456;
 
@@ -316,6 +335,58 @@ class Usercontroller extends Controller
             'status' => true,
             'message' => 'OTP sent to PAN registered mobile number',
             'otp' => $otp
+        ]);
+    }
+    public function verifyPanOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'otp' => 'required|digits:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+        $kyc = Kyc::where('user_id', $user->id)->first();
+
+        if (!$kyc) {
+            return response()->json([
+                'status' => false,
+                'message' => 'KYC record not found'
+            ]);
+        }
+
+        $kyc = Kyc::where('user_id', $user->id)
+            ->where('otp', $request->otp)
+            ->where('otp_expires_at', '>', now())
+            ->first();
+
+        if (!$kyc) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid or expired OTP'
+            ], 200);
+        }
+
+        $kyc->update([
+            'otp' => null,
+            'otp_expires_at' => null,
+            'pan_status' => 'Verified'
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'PAN verified successfully'
         ]);
     }
 }
