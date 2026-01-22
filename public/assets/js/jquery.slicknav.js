@@ -111,7 +111,7 @@
             iconClass += ' ' + prefix + '_no-text';
         }
 
-        if (settings.parentTag == 'a') {
+        if (settings.parentTag === 'a') {
             settings.parentTag = 'a href="#"';
         }
 
@@ -205,24 +205,25 @@
             }
 
             // accessibility for links
-            item.children('a').attr('role', 'menuitem').click(function(event){
+            item.children('a').attr('role', 'menuitem').on("click", function(event){
                 //Ensure that it's not a parent
                 if (settings.closeOnClick && !$(event.target).parent().closest('li').hasClass(prefix+'_parent')) {
                         //Emulate menu close if set
-                        $($this.btn).click();
+                        $($this.btn).trigger('click');
                     }
             });
 
             //also close on click if parent links are set
             if (settings.closeOnClick && settings.allowParentLinks) {
-                item.children('a').children('a').click(function (event) {
+				
+                item.children('a').children('a').on("click", function(event){
                     //Emulate menu close
-                    $($this.btn).click();
+                    $($this.btn).trigger('click');
                 });
 
-                item.find('.'+prefix+'_parent-link a:not(.'+prefix+'_item)').click(function(event){
+                item.find('.'+prefix+'_parent-link a:not(.'+prefix+'_item)').on("click", function(event){
                     //Emulate menu close
-                        $($this.btn).click();
+						$($this.btn).trigger('click');
                 });
             }
         });
@@ -242,16 +243,16 @@
         $this.mobileNav.attr('role','menu');
 
         // outline prevention when using mouse
-        $(document).mousedown(function(){
-            $this._outlines(false);
+        $(document).on( "mousedown", function() {
+			$this._outlines(false);
         });
 
-        $(document).keyup(function(){
+		$(document).on( "keyup", function() {
             $this._outlines(true);
         });
 
         // menu button click
-        $($this.btn).click(function (e) {
+        $($this.btn).on("click", function(e){
             e.preventDefault();
             $this._menuToggle();
         });
@@ -263,7 +264,7 @@
         });
 
         // check for keyboard events on menu button and menu parents
-        $($this.btn).keydown(function (e) {
+        $($this.btn).on("keydown", function(e){
             var ev = e || event;
 
             switch(ev.keyCode) {
@@ -275,7 +276,7 @@
                         $this._menuToggle();
                     }
                     
-                    $($this.btn).next().find('[role="menuitem"]').first().focus();
+                    $($this.btn).next().find('[role="menuitem"]').first().trigger( "focus" );
                     break;
             }
 
@@ -295,7 +296,7 @@
                     if ($(e.target).parent().hasClass(prefix+'_collapsed')) {
                         $this._itemClick($(e.target));
                     }
-                    $(e.target).next().find('[role="menuitem"]').first().focus();
+                    $(e.target).next().find('[role="menuitem"]').first().trigger( "focus" );
                     break;
             }
         });
@@ -313,37 +314,37 @@
                         nextIdx = 0;
                     }
                     var next = allItems.eq( nextIdx );
-                    next.focus();
+                    next.trigger( "focus" );
                 break;
                 case Keyboard.UP:
                     e.preventDefault();
                     var allItems = $(e.target).parent().parent().children().children('[role="menuitem"]:visible');
                     var idx = allItems.index( e.target );
                     var next = allItems.eq( idx - 1 );
-                    next.focus();
+                    next.trigger( "focus" );
                 break;
                 case Keyboard.LEFT:
                     e.preventDefault();
                     if ($(e.target).parent().parent().parent().hasClass(prefix+'_open')) {
                         var parent = $(e.target).parent().parent().prev();
-                        parent.focus();
+                        parent.trigger( "focus" );
                         $this._itemClick(parent);
                     } else if ($(e.target).parent().parent().hasClass(prefix+'_nav')){
                         $this._menuToggle();
-                        $($this.btn).focus();
+                        $($this.btn).trigger( "focus" );
                     }
                     break;
                 case Keyboard.ESCAPE:
                     e.preventDefault();
                     $this._menuToggle();
-                    $($this.btn).focus();
+                    $($this.btn).trigger( "focus" );
                     break;    
             }
         });
 
         // allow links clickable within parent tags if set
         if (settings.allowParentLinks && settings.nestedParentLinks) {
-            $('.'+prefix+'_item a').click(function(e){
+            $('.'+prefix+'_item a').on("click", function(e){
                     e.stopImmediatePropagation();
             });
         }
@@ -430,7 +431,7 @@
             //Fire init or afterClose callback
             if (!init){
                 settings.afterClose(trigger);
-            } else if (trigger == 'init'){
+            } else if (trigger === 'init'){
                 settings.init();
             }
         }

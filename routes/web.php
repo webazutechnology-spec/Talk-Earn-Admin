@@ -32,18 +32,13 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/privacy', [HomeController::class, 'static_content'])->name('privacy-policy');
 Route::get('/terms', [HomeController::class, 'static_content'])->name('terms');
 Route::get('/about-us', [HomeController::class, 'static_content'])->name('about-us');
-Route::get('/our-services', [HomeController::class, 'ourServices'])->name('our-services');
-Route::get('/client-review', [HomeController::class, 'ourProjects'])->name('our-projects');
+Route::get('/our-team', [HomeController::class, 'ourServices'])->name('our-team');
 
 Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('contact-us');
 Route::post('/contact-submit', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/events-and-news', [HomeController::class, 'blogs'])->name('blog-list');
 Route::get('/events-and-news/{slug}', [HomeController::class, 'blogDetails'])->name('blog-details');
-Route::post('/calculate', [SolarCalculatorController::class, 'calculate'])->name('calculate');
-Route::post('/save-calculation', [SolarCalculatorController::class, 'saveCalculation'])->name('save-calculation');
-Route::get('/request-send', [HomeController::class, 'querySend'])->name('request-send');
-Route::post('/request-send', [HomeController::class, 'querySend'])->name('request-store');
 
 
 Route::middleware(['permission'])->group(function () {

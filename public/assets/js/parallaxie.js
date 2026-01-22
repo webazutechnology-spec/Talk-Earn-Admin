@@ -8,7 +8,7 @@
  */
 
 (function( $ ){
-
+	"use strict";
     $.fn.parallaxie = function( options ){
 
         var options = $.extend({
@@ -23,11 +23,11 @@
 
             var $el = $(this);
             var local_options = $el.data('parallaxie');
-            if( typeof local_options != 'object' ) local_options = {};
+            if( typeof local_options !== 'object' ) local_options = {};
             local_options = $.extend( {}, options, local_options );
 
             var image_url = $el.data('image');
-            if( typeof image_url == 'undefined' ){
+            if( typeof image_url === 'undefined' ){
                 image_url = $el.css('background-image');
                 if( !image_url ) return;
 
