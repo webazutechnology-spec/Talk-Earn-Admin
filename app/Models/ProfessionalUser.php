@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Professionalusers extends Model
+class ProfessionalUser extends Model
 {
     protected $table = 'professional_users';
     protected $primaryKey = 'id';

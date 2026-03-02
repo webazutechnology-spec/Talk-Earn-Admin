@@ -12,15 +12,18 @@ class UserRequest extends Model
     protected $table = 'user_requests';
 
     protected $fillable = [
+        'reg_code',
         'name',
         'email',
         'phone_number',
+        'phonecode',
         'otp',
         'token',
         'hit_count',
         'for',
         'verify_at',
         'otp_expires_at',
+        'referral_id',
         'type'
     ];
 }

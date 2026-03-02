@@ -47,6 +47,7 @@ class User extends Authenticatable
         'hobbies',
         'Type',
     ];
+    
     protected  $casts = [
         'hobbies' => 'array',
     ];
@@ -106,10 +107,6 @@ class User extends Authenticatable
     {
         return $this->hasOne(Wallet::class);
     }
-    public function user_steps()
-    {
-        return $this->hasMany(UserSteps::class);
-    }
 
     public function bank()
     {
@@ -131,30 +128,25 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'parent_id');
     }
 
-    public function lead()
-    {
-        return $this->hasMany(Leads::class);
-    }
+        // public function lead()
+        // {
+        //     return $this->hasMany(Leads::class);
+        // }
 
-    public function task()
-    {
-        return $this->hasMany(Task::class);
-    }
+        // public function task()
+        // {
+        //     return $this->hasMany(Task::class);
+        // }
 
-    public function package()
-    {
-        return $this->hasOne(Packages::class);
-    }
+    // public function package()
+    // {
+    //     return $this->hasOne(Packages::class);
+    // }
 
-    public function user_document()
-    {
-        return $this->hasMany(UserDocument::class);
-    }
-
-    public function camps()
-    {
-        return $this->hasMany(Camps::class, 'owner_id', 'id');
-    }
+    // public function user_document()
+    // {
+    //     return $this->hasMany(UserDocument::class);
+    // }
 
     public function getCreatedAtAttribute($value)
     {

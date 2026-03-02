@@ -1,0 +1,1017 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Talknearn API",
+        "description": "Talknearn API Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "Talknearn API V1 Base URL"
+        }
+    ],
+    "paths": {
+        "/user/profile": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Get user profile",
+                "description": "Retrieve the authenticated user profile information.",
+                "operationId": "getUserProfile",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile retrieved successfully."
+                                        },
+                                        "data": {
+                                            "description": "User object",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/user/update-profile": {
+            "post": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update user profile",
+                "description": "Update user profile information including name, username, about, hobbies, profile image, media files, and all professional fields.\\n\\nPreview in Postman: After calling this API, you can view the response and test the endpoint using Postman. Import the Swagger JSON or use the endpoint directly in Postman for preview.",
+                "operationId": "updateUserProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "username",
+                                    "about",
+                                    "user_type",
+                                    "gender",
+                                    "dob",
+                                    "hobbies",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "user_type": {
+                                        "description": "User type (dropdown)",
+                                        "type": "string",
+                                        "enum": [
+                                            "Personal",
+                                            "Professional"
+                                        ]
+                                    },
+                                    "name": {
+                                        "description": "User full name",
+                                        "type": "string",
+                                        "example": "Durgesh Verma"
+                                    },
+                                    "username": {
+                                        "description": "Unique username",
+                                        "type": "string",
+                                        "example": "dk01"
+                                    },
+                                    "about": {
+                                        "description": "User bio/about section",
+                                        "type": "string",
+                                        "example": "User bio"
+                                    },
+                                    "location": {
+                                        "description": "User location",
+                                        "type": "string"
+                                    },
+                                    "hobbies": {
+                                        "description": "Array of hobbies",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "image": {
+                                        "description": "Profile image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "media": {
+                                        "description": "Array of media files",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "title": {
+                                        "description": "Professional title",
+                                        "type": "string"
+                                    },
+                                    "skills": {
+                                        "description": "Array of skills",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "skill_info": {
+                                        "description": "Skill information",
+                                        "type": "string"
+                                    },
+                                    "expert_bio": {
+                                        "description": "Expert bio",
+                                        "type": "string"
+                                    },
+                                    "portfolio_gallery": {
+                                        "description": "Portfolio gallery images",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "your_vibe": {
+                                        "description": "Your vibe images",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "files": {
+                                        "description": "Professional files",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "service_timing_type": {
+                                        "description": "Service timing type",
+                                        "type": "string",
+                                        "enum": [
+                                            "No Hours Available",
+                                            "Always Open",
+                                            "Permanently Closed",
+                                            "Temporarily Closed",
+                                            "Open during selected hours"
+                                        ],
+                                        "example": "Open during selected hours"
+                                    },
+                                    "service_slots": {
+                                        "description": "Custom service slots",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "day": {
+                                                    "description": "Day of week",
+                                                    "type": "string",
+                                                    "example": "Monday"
+                                                },
+                                                "start": {
+                                                    "description": "Start time (HH:MM)",
+                                                    "type": "string",
+                                                    "example": "09:00"
+                                                },
+                                                "end": {
+                                                    "description": "End time (HH:MM)",
+                                                    "type": "string",
+                                                    "example": "18:00"
+                                                },
+                                                "type": {
+                                                    "description": "Open or Closed",
+                                                    "type": "string",
+                                                    "example": "Open"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "day": "Monday",
+                                                "start": "09:00",
+                                                "end": "18:00",
+                                                "type": "Open"
+                                            },
+                                            {
+                                                "day": "Tuesday",
+                                                "start": "10:00",
+                                                "end": "17:00",
+                                                "type": "Open"
+                                            },
+                                            {
+                                                "day": "Wednesday",
+                                                "start": "10:00",
+                                                "end": "17:00",
+                                                "type": "Open"
+                                            },
+                                            {
+                                                "day": "Thursday",
+                                                "start": "10:00",
+                                                "end": "17:00",
+                                                "type": "Open"
+                                            },
+                                            {
+                                                "day": "Friday",
+                                                "start": "10:00",
+                                                "end": "17:00",
+                                                "type": "Open"
+                                            },
+                                            {
+                                                "day": "Saturday",
+                                                "start": "09:00",
+                                                "end": "18:00",
+                                                "type": "Closed"
+                                            },
+                                            {
+                                                "day": "Sunday",
+                                                "start": "09:00",
+                                                "end": "18:00",
+                                                "type": "Closed"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully."
+                                        },
+                                        "data": {
+                                            "description": "Updated user data",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user-listing": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "List users with pagination",
+                "description": "Get a paginated list of users filtered by user_type (personal or professional).",
+                "operationId": "listUsers",
+                "parameters": [
+                    {
+                        "name": "user_type",
+                        "in": "query",
+                        "description": "Type of user to filter (personal or professional)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "personal",
+                                "professional"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of users per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated user list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User list fetched successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "users": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "description": "Pagination details",
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user-listing/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user details by ID",
+                "description": "Retrieve detailed information for a specific user by ID.",
+                "operationId": "getUserDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User details fetched successfully."
+                                        },
+                                        "data": {
+                                            "description": "User details",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login or Register using Phone Number",
+                "description": "Checks if the phone number exists. If registered, sends OTP for login. If not registered, sends OTP for registration.",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "phone_number"
+                                ],
+                                "properties": {
+                                    "phone_number": {
+                                        "description": "Valid 10-digit Indian phone number starting from 5-9",
+                                        "type": "string",
+                                        "example": "9918829937"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Phone number registered."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "uuid-token"
+                                                },
+                                                "next_screen": {
+                                                    "type": "string",
+                                                    "example": "otp"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Phone number is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/registration": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Complete user registration",
+                "description": "Registers a new user after login OTP request. Referral ID is optional but must exist if provided.",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "phone_number",
+                                    "token"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Full name of the user",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "Valid unique email address",
+                                        "type": "string",
+                                        "example": "john@example.com"
+                                    },
+                                    "phone_number": {
+                                        "description": "Valid 10-digit Indian phone number starting from 5-9",
+                                        "type": "string",
+                                        "example": "9918829937"
+                                    },
+                                    "token": {
+                                        "description": "Token received from login API",
+                                        "type": "string",
+                                        "example": "random-uuid-token"
+                                    },
+                                    "referral_id": {
+                                        "description": "Optional referral user ID",
+                                        "type": "integer",
+                                        "example": 12,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registration data saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Please verify OTP."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "random-uuid-token"
+                                                },
+                                                "next_screen": {
+                                                    "type": "string",
+                                                    "example": "otp"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 422
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid referral ID."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized or expired token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 401
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid token."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verify-otp": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify OTP for login or registration",
+                "description": "Verifies the OTP sent to the phone number for either login or completing registration.",
+                "operationId": "verifyOtp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "phone_number",
+                                    "token",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "phone_number": {
+                                        "description": "Valid 10-digit Indian phone number",
+                                        "type": "string",
+                                        "example": "9918829937"
+                                    },
+                                    "token": {
+                                        "description": "Token received from login or registration API",
+                                        "type": "string",
+                                        "example": "uuid-token"
+                                    },
+                                    "otp": {
+                                        "description": "6-digit OTP",
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login Successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "sanctum-token"
+                                                },
+                                                "user": {
+                                                    "description": "User object",
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Phone number is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized or invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid token."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resend-otp": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Resend OTP for login or registration",
+                "description": "Resends the OTP to the phone number if the token is valid and OTP has not been verified yet.",
+                "operationId": "resendOtp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "phone_number",
+                                    "token"
+                                ],
+                                "properties": {
+                                    "phone_number": {
+                                        "description": "Valid 10-digit Indian phone number",
+                                        "type": "string",
+                                        "example": "9918829937"
+                                    },
+                                    "token": {
+                                        "description": "Token received from login or registration API",
+                                        "type": "string",
+                                        "example": "uuid-token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP resent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP send successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "uuid-token"
+                                                },
+                                                "next_screen": {
+                                                    "type": "string",
+                                                    "example": "otp"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Phone number is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized or invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid token."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "User Profile",
+            "description": "User Profile"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        }
+    ]
+}

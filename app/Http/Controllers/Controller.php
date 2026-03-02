@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Cookie;
-
+use OpenApi\Attributes as OA;
 use App\Models\Configuration;
 use App\Models\State;
 use App\Models\Citie;
@@ -14,8 +14,23 @@ use App\Models\Wallet;
 use App\Models\User;
 
 
+/**
+ * @OA\Info(
+ *    title="Swagger with Laravel",
+ *    version="1.0.0",
+ * )
+ * @OA\Server(
+ *     url="/api/v1",
+ *     description="API v1 server"
+ * )
+ * @OA\SecurityScheme(
+ *     type="http",
+ *     securityScheme="bearerAuth",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
 
-
+ */
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
